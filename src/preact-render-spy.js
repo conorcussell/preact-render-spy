@@ -1,5 +1,7 @@
 const {render, rerender} = require('preact');
+const renderToString = require('preact-render-to-string');
 const isEqual = require('lodash.isequal');
+
 
 const {isWhere} = require('./is-where');
 const {selToWhere} = require('./sel-to-where');
@@ -263,6 +265,13 @@ class FindWrapper {
 
     return this.context.vdomMap.get(this[0]);
   }
+
+
+  debug() {
+    const { shallow, vdomMap } = this.context;
+    const vNode = vdomMap.get(this[0]);
+    return renderToString(vNode, {}, { shallow, xml: shallow,  pretty: true });
+  }
 }
 
 class RenderContext extends FindWrapper {
@@ -273,6 +282,10 @@ class RenderContext extends FindWrapper {
       context: {
         value: this,
         configurable: true,
+        enumerable: false,
+      },
+      shallow: {
+        value: depth === 1,
         enumerable: false,
       },
       renderedDepth: {
